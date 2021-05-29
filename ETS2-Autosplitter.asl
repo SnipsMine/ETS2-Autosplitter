@@ -11,20 +11,30 @@ init
 
 isLoading
 {
-	var file_name = "Local\\SimTelemetrySCS";
+	string[]  file_names = {"Local\\SimTelemetrySCS", "Local\\SCSTelemetry"};
 	int file_size = 16 * 1024;
 
 	// Assumes another process has created the memory-mapped file.
-	// MemoryMappedFile created by: https://github.com/RenCloud/scs-sdk-plugin/tree/v.1.9.0
-	using (var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting(file_name))
+	// MemoryMappedFile created by: https://github.com/RenCloud/scs-sdk-plugin
+	foreach (string file_name in file_names)
 	{
-		using (var accessor = mmf.CreateViewAccessor(0, file_size))
+		try
 		{
-			bool pauzed;
-			accessor.Read(4, out pauzed);
-			vars.pauzed = pauzed;
+			using (var mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting(file_name))
+			{
+				using (var accessor = mmf.CreateViewAccessor(0, file_size))
+				{
+					bool pauzed;
+					accessor.Read(4, out pauzed);
+					vars.pauzed = pauzed;
+				}
+			}
+		}catch{
+			print("file " + file_name + " does not exist");
 		}
 	}
+	
+	
 		
 	System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
 	
