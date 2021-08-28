@@ -4,13 +4,41 @@ state("eurotrucks2")
 }
 
 init
-{
+{	
 	vars.pauzed = false;
 	vars.isBlack = false;
+	vars.old_loading = false;
+	vars.new_loading = false;
+	
+	vars.start_time = null;
+	vars.old_time = null;
+	vars.time = null;
+	
+	vars.seconds = null;
+	vars.pref_time = null;
+	vars.game_seconds = null;
+	
+	vars.scale = 0;
+		
 }
 
-isLoading
-{
+startup{
+	
+	refreshRate = 120;
+	
+	settings.Add("loadRemoval", true, "Remove load times");
+	settings.SetToolTip("loadRemoval", "Removes the load times from the game");
+	
+	settings.Add("igt", false, "In game time");
+	settings.SetToolTip("igt", "If checked uncheck the load time remover and check Start to make this work\nWhen checked the timer will automatically start when the IGT changes, the time elapsed in game will be displayed on the game time timer.");
+	
+	settings.Add("realSeconds", false, "Real time seconds", "igt");
+	settings.SetToolTip("realSeconds", "When checked the real time seconds per minute will be used. Else the approximation of  the IGT seconds will be used.");
+
+}
+
+update{
+	DateTime start = DateTime.Now;
 	string[]  file_names = {"Local\\SimTelemetrySCS", "Local\\SCSTelemetry"};
 	int file_size = 16 * 1024;
 
@@ -27,49 +55,130 @@ isLoading
 					bool pauzed;
 					accessor.Read(4, out pauzed);
 					vars.pauzed = pauzed;
+					
+					uint time;
+					accessor.Read(64, out time);
+					
+					int year = Convert.ToInt32(time/525948.766)+1;
+					int month = Convert.ToInt32(time/43829.0639)+1;
+					int day = Convert.ToInt32(time/1440) +1;
+					int hour = Convert.ToInt32(time/60);
+					int minute = Convert.ToInt32(time);
+					
+					print("Year: " + year + ", Month: " + (month - (year - 1) * 12 )+ ", day: " + (day - (month - 1) * 30) +", hour: " + (hour - (day-1) * 24 ) + ", minute: " + (minute - (hour) * 60) );
+					vars.old_time = vars.time;
+					vars.time = new DateTime(year,  month - (year - 1) * 12 , day - (month - 1) * 30, hour - (day-1) * 24 , minute - (hour) * 60, 00);
+					
+					float scale;
+					accessor.Read(700, out scale);
+					vars.scale = scale;
 				}
 			}
-		}catch{
+		}catch(FileNotFoundException e){
 			print("file " + file_name + " does not exist");
 		}
 	}
-	
-	
-		
-	System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
-	
-	int x = 0;
-	int y = 0;
-	System.Drawing.Rectangle bounds = new System.Drawing.Rectangle(x, y, bmp.Width, bmp.Height);
-	using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp)){
-		g.CopyFromScreen(bounds.Location, System.Drawing.Point.Empty, bounds.Size);
+	DateTime end = DateTime.Now;
+	//print("Time Update: " + (end-start).ToString());
+}
+
+start{
+	if (settings["igt"]) {  
+		if (vars.old_time < vars.time){
+			vars.start_time = vars.time;
+			vars.seconds = DateTime.Now;
+			vars.game_seconds = new TimeSpan(0, 0, 0);
+			return true;
+		}
 	}
-	for(x=0; x<bmp.Width; x++)
-	{
-		for(y=0; y<bmp.Height; y++)
+}
+
+gameTime{
+	DateTime start = DateTime.Now;
+	TimeSpan gametime  = (DateTime) vars.time - (DateTime) vars.start_time;
+	
+	if (vars.old_time < vars.time){
+		vars.game_seconds = new TimeSpan(0, 0, 0);
+		if (settings["realSeconds"]) {  
+			vars.seconds = DateTime.Now;
+		}
+		return gametime;
+		
+	}else{
+		if (settings["realSeconds"]) { 
+			return  gametime + (DateTime.Now - vars.seconds);
+			
+		}else{
+			DateTime start2 = DateTime.Now;
+			vars.pref_time = vars.seconds;
+			vars.seconds = DateTime.Now;
+			print("Total time between runs: " + (vars.seconds - vars.pref_time).ToString());
+			//TimeSpan game_seconds = TimeSpan.FromTicks(Convert.ToInt64(vars.scale * (vars.seconds - vars.pref_time).Ticks) + 1) ;
+			//vars.game_seconds += game_seconds;
+			DateTime end = DateTime.Now;
+			
+			//print("Time gametime: " + (end-start).ToString() + ", Time calculate seconds: " + (end-start2).ToString());
+			return  gametime /*+ vars.game_seconds*/;
+		}
+	}
+}
+
+split{
+		return vars.old_loading == true && vars.new_loading == false;
+}
+
+isLoading
+{
+	DateTime start = DateTime.Now;
+	if (settings["loadRemoval"]) {  
+		print("Hallo");
+		System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
+		
+		int x = 0;
+		int y = 0;
+		System.Drawing.Rectangle bounds = new System.Drawing.Rectangle(x, y, bmp.Width, bmp.Height);
+		using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp)){
+			g.CopyFromScreen(bounds.Location, System.Drawing.Point.Empty, bounds.Size);
+		}
+		for(x=0; x<bmp.Width; x++)
 		{
-			System.Drawing.Color pixel = bmp.GetPixel(x,y);
-			if(pixel.G == 0 && pixel.B == 0 && pixel.R == 0)
+			for(y=0; y<bmp.Height; y++)
 			{
-				vars.isBlack = true;
-			}else
+				System.Drawing.Color pixel = bmp.GetPixel(x,y);
+				if(pixel.G == 0 && pixel.B == 0 && pixel.R == 0)
+				{
+					vars.isBlack = true;
+				}else
+				{
+					vars.isBlack = false;
+					break;
+				}
+			}
+			if (vars.isBlack == false)
 			{
-				vars.isBlack = false;
 				break;
 			}
 		}
-		if (vars.isBlack == false)
+			
+		print("pauzed: " + vars.pauzed + ", is black: " + vars.isBlack);
+		
+		DateTime end = DateTime.Now;
+		//print("Time isLoading: " + (end-start).ToString());
+
+		if(vars.pauzed == true && vars.isBlack == true)	
 		{
-			break;
-		}
-	}
-		
-	print("pauzed: " + vars.pauzed + ", is black: " + vars.isBlack);
-		
-	if(vars.pauzed == true && vars.isBlack == true)	
-	{
-		return true;
+			vars.old_loading = vars.new_loading;
+			vars.new_loading = true;
+			return true;
+		}else{
+			vars.old_loading = vars.new_loading;
+			vars.new_loading = false;
+			return false;
+		}	
 	}else{
-		return false;
-	}	
+		DateTime end = DateTime.Now;
+		//print("Time isLoading: " + (end-start).ToString());
+		return true;
+	}
+	
 }
