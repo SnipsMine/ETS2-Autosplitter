@@ -14,10 +14,13 @@ In order to read the games values this script makes use of another program. To i
 
 Game version | Release version| Tested
 -------------|----------------|----------
-< 1.26         |1_5                  |Not tested
-1.27-1.34    |v1.9.0               |Tested
-1.35            |v.1.10.4            |Not tested
-1.36            |v.1.10.5            |Not tested
+< 1.26          |1_5                 |Not tested
+1.27-1.31       |v1.9.0              |Not tested
+1.32            |V.1.10.6            |Tested
+1.33            |V.1.10.6            |Not tested
+1.34            |V.1.10.6            |Npt tested
+1.35            |v.1.10.6            |Not tested
+1.36            |v.1.10.6            |Not tested
 1.37            |v.1.10.6            |Not tested
 1.38            |v.1.10.6            |Not tested
 1.39            |v.1.10.6            |Not tested
