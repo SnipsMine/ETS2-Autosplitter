@@ -94,31 +94,33 @@ start{
 }
 
 gameTime{
-	DateTime start = DateTime.Now;
-	TimeSpan gametime  = (DateTime) vars.time - (DateTime) vars.start_time;
-	
-	if (vars.old_time < vars.time){
-		vars.game_seconds = new TimeSpan(0, 0, 0);
-		if (settings["realSeconds"]) {  
-			vars.seconds = DateTime.Now;
-		}
-		return gametime;
+	if(settings["igt"]){
+		DateTime start = DateTime.Now;
+		TimeSpan gametime  = (DateTime) vars.time - (DateTime) vars.start_time;
 		
-	}else{
-		if (settings["realSeconds"]) { 
-			return  gametime + (DateTime.Now - vars.seconds);
+		if (vars.old_time < vars.time){
+			vars.game_seconds = new TimeSpan(0, 0, 0);
+			if (settings["realSeconds"]) {  
+				vars.seconds = DateTime.Now;
+			}
+			return gametime;
 			
 		}else{
-			DateTime start2 = DateTime.Now;
-			vars.pref_time = vars.seconds;
-			vars.seconds = DateTime.Now;
-			print("Total time between runs: " + (vars.seconds - vars.pref_time).ToString());
-			//TimeSpan game_seconds = TimeSpan.FromTicks(Convert.ToInt64(vars.scale * (vars.seconds - vars.pref_time).Ticks) + 1) ;
-			//vars.game_seconds += game_seconds;
-			DateTime end = DateTime.Now;
-			
-			//print("Time gametime: " + (end-start).ToString() + ", Time calculate seconds: " + (end-start2).ToString());
-			return  gametime /*+ vars.game_seconds*/;
+			if (settings["realSeconds"]) { 
+				return  gametime + (DateTime.Now - vars.seconds);
+				
+			}else{
+				DateTime start2 = DateTime.Now;
+				vars.pref_time = vars.seconds;
+				vars.seconds = DateTime.Now;
+				print("Total time between runs: " + (vars.seconds - vars.pref_time).ToString());
+				//TimeSpan game_seconds = TimeSpan.FromTicks(Convert.ToInt64(vars.scale * (vars.seconds - vars.pref_time).Ticks) + 1) ;
+				//vars.game_seconds += game_seconds;
+				DateTime end = DateTime.Now;
+				
+				//print("Time gametime: " + (end-start).ToString() + ", Time calculate seconds: " + (end-start2).ToString());
+				return  gametime /*+ vars.game_seconds*/;
+			}
 		}
 	}
 }
