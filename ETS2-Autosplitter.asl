@@ -9,6 +9,7 @@ init
 	vars.isBlack = false;
 	vars.old_loading = false;
 	vars.new_loading = false;
+	vars.loadTime  = new DateTime(1,1,1);
 	
 	vars.start_time = null;
 	vars.old_time = null;
@@ -59,16 +60,17 @@ update{
 					uint time;
 					accessor.Read(64, out time);
 					
-					int year = Convert.ToInt32(time/525948.766)+1;
-					int month = Convert.ToInt32(time/43829.0639)+1;
-					int day = Convert.ToInt32(time/1440) +1;
-					int hour = Convert.ToInt32(time/60);
-					int minute = Convert.ToInt32(time);
-					
-					print("Year: " + year + ", Month: " + (month - (year - 1) * 12 )+ ", day: " + (day - (month - 1) * 30) +", hour: " + (hour - (day-1) * 24 ) + ", minute: " + (minute - (hour) * 60) );
+					int year = (int)(time/525948.766)+1;
+					int month = (int)(time/43829.0639)+1;
+					int day = (int)(time/1440) +1;
+					int hour = (int)(time/60);
+					int minute = (int)(time);
+						
+					print("Year: " + year + ", Month: " + (month - (year - 1) * 12 )+ ", day: " + (int)(day - (month - 1) * 30.4368499) +", hour: " + (hour - (day-1) * 24 ) + ", minute: " + (minute - (hour) * 60) );
+						
 					vars.old_time = vars.time;
-					vars.time = new DateTime(year,  month - (year - 1) * 12 , day - (month - 1) * 30, hour - (day-1) * 24 , minute - (hour) * 60, 00);
-					
+					vars.time = new DateTime(year,  month - (year - 1) * 12 , (int)(day - (month - 1) * 30.4368499), hour - (day-1) * 24 , minute - (hour) * 60, 00);
+	
 					float scale;
 					accessor.Read(700, out scale);
 					vars.scale = scale;
@@ -126,7 +128,10 @@ gameTime{
 }
 
 split{
-		return vars.old_loading == true && vars.new_loading == false;
+	if (vars.old_loading == true && vars.new_loading == false && (DateTime.Now - (DateTime) vars.loadTime).Seconds > 2){
+	
+		return true;
+	}
 }
 
 isLoading
@@ -171,6 +176,9 @@ isLoading
 		{
 			vars.old_loading = vars.new_loading;
 			vars.new_loading = true;
+			if (vars.old_loading == false){
+				vars.loadTime = DateTime.Now;
+			}
 			return true;
 		}else{
 			vars.old_loading = vars.new_loading;
