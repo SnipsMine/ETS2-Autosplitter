@@ -3,6 +3,11 @@ state("eurotrucks2")
 
 }
 
+state("amtrucks")
+{
+	
+}
+
 init
 {	
 	vars.pauzed = false;
