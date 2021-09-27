@@ -91,10 +91,11 @@ update{
 
 start{
 	if (settings["igt"]) {  
+		vars.start_time = vars.time;
+		vars.seconds = DateTime.Now;
+		vars. = new TimeSpan(0, 0, 0);
+		
 		if (vars.old_time < vars.time){
-			vars.start_time = vars.time;
-			vars.seconds = DateTime.Now;
-			vars.game_seconds = new TimeSpan(0, 0, 0);
 			return true;
 		}
 	}
