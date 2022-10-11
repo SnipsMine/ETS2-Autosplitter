@@ -134,7 +134,7 @@ gameTime{
 }
 
 split{
-	if (vars.old_loading == true && vars.new_loading == false && (DateTime.Now - (DateTime) vars.loadTime).Seconds > 2){
+	if (vars.old_loading == true && vars.new_loading == false && (DateTime.Now - (DateTime) vars.loadTime).Seconds > 1){
 	
 		return true;
 	}
