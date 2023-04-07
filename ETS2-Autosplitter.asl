@@ -62,20 +62,21 @@ update{
 					accessor.Read(4, out pauzed);
 					vars.pauzed = pauzed;
 					
+					
 					uint time;
 					accessor.Read(64, out time);
-					
-					int year = (int)(time/525948.766)+1;
-					int month = (int)(time/43829.0639)+1;
-					int day = (int)(time/1440) +1;
-					int hour = (int)(time/60);
-					int minute = (int)(time);
-						
-					print("Year: " + year + ", Month: " + (month - (year - 1) * 12 )+ ", day: " + (int)(day - (month - 1) * 30.4368499) +", hour: " + (hour - (day-1) * 24 ) + ", minute: " + (minute - (hour) * 60) );
-						
-					vars.old_time = vars.time;
-					vars.time = new DateTime(year,  month - (year - 1) * 12 , (int)(day - (month - 1) * 30.4368499), hour - (day-1) * 24 , minute - (hour) * 60, 00);
-	
+					if (settings["igt"]){
+						int year = (int)(time/525948.766)+1;
+						int month = (int)(time/43829.0639)+1;
+						int day = (int)(time/1440) +1;
+						int hour = (int)(time/60);
+						int minute = (int)(time);
+
+						print("Year: " + year + ", Month: " + (month - (year - 1) * 12 )+ ", day: " + (int)(day - (month - 1) * 30.4368499) +", hour: " + (hour - (day-1) * 24 ) + ", minute: " + (minute - (hour) * 60) );
+
+						vars.old_time = vars.time;
+						vars.time = new DateTime(year,  month - (year - 1) * 12 , (int)(day - (month - 1) * 30.4368499), hour - (day-1) * 24 , minute - (hour) * 60, 00);
+					}
 					float scale;
 					accessor.Read(700, out scale);
 					vars.scale = scale;
