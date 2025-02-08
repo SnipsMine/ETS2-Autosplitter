@@ -116,8 +116,9 @@ gameTime{
 			
 		}else{
 			if (settings["realSeconds"]) { 
-				return  gametime + (DateTime.Now - vars.seconds);
-				
+			    	if (vars.pauzed == false){
+					return  gametime + (DateTime.Now - vars.seconds);
+				}
 			}else{
 				DateTime start2 = DateTime.Now;
 				vars.pref_time = vars.seconds;
@@ -145,11 +146,10 @@ isLoading
 {
 	DateTime start = DateTime.Now;
 	if (settings["loadRemoval"]) {  
-		print("Hallo");
 		System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
 		
-		int x = 0;
-		int y = 0;
+		int x = 80;
+		int y = 80;
 		System.Drawing.Rectangle bounds = new System.Drawing.Rectangle(x, y, bmp.Width, bmp.Height);
 		using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(bmp)){
 			g.CopyFromScreen(bounds.Location, System.Drawing.Point.Empty, bounds.Size);
