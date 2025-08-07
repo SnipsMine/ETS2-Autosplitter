@@ -146,7 +146,7 @@ isLoading
 {
 	DateTime start = DateTime.Now;
 	if (settings["loadRemoval"]) {  
-		System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(100, 100);
+		System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(160, 40);
 		
 		int x = 80;
 		int y = 80;
