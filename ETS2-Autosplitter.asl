@@ -159,7 +159,7 @@ gameTime{
 }
 
 split{
-	if (settings["tc"]){
+	if (settings["igt_autosplit"]){
 	    //print("Navigatie afstand: " + vars.nav_dist);
         //print("split: " + vars.curr_split);
         int[] splits = null;
