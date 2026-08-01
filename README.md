@@ -12,19 +12,10 @@ In order to download this repository click on the code button then you can selec
 
 In order to read the games values this script makes use of another program. To install this program you go to this link: https://github.com/RenCloud/scs-sdk-plugin. On the right side of the page you will find the releases each release corresponds to a different version of ETS2. In the table below you can lookup the correct release version you would need to download for your game version. A note: if you use version 1.26 or lower to run you game you need to build the package yourself. This creates a folder named ETS2-Autosplitter-main which contains the load remover.
 
-Game version | Release version| Tested
--------------|----------------|----------
-< 1.26          |1_5                 |Not tested
-1.27-1.31       |v1.9.0              |Not tested
-1.32            |V.1.10.6            |Tested
-1.33            |V.1.10.6            |Not tested
-1.34            |V.1.10.6            |Npt tested
-1.35            |v.1.10.6            |Not tested
-1.36            |v.1.10.6            |Not tested
-1.37            |v.1.10.6            |Not tested
-1.38            |v.1.10.6            |Not tested
-1.39            |v.1.10.6            |Not tested
-1.40            |v.1.10.6            |Tested
+Game version | Release version | Tested
+-------------|-----------------|----------
+1.31         |1.11.1           |tested
+1.60         |1.11.1           |tested
 
 After downloading the correct release for you game. Go to the Eurotruck game folder, this folder can be found in in the folder "C:\Program Files (x86)\Steam\steamapps\common\Euro Truck Simulator 2" if you install games in a custom folder you can find it there. When in there open the bin folder. You will see 2 folders win_x64 and win_x86. Open win_x86 there you will find the executable for ETS2 in here we create a folder named plugins if the folder already exist use that one. Now open the zip we just downloads and go into the Win64 folder and drag the file "scs-telemetry.dll" to the plugin folder we just created.
 

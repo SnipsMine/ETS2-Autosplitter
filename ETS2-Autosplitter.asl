@@ -50,10 +50,10 @@ startup{
 	settings.Add("igt_autosplit", false, "Autosplit IGT Runs (choose one)", "igt");
 
 	settings.Add("tc", false, "Autosplit Tampere to Catania", "igt_autosplit");
-	settings.SetToolTip("tc", "Performs splits when; tbd");
+	//settings.SetToolTip("tc", "Performs splits when; tbd");
 
 	settings.Add("el", false, "Autosplit Edinburgh to London", "igt_autosplit");
-    settings.SetToolTip("el", "Performs splits when; tbd");
+   // settings.SetToolTip("el", "Performs splits when; tbd");
 
 }
 
@@ -110,9 +110,12 @@ update{
 	print("Time Update: " + (end-start).ToString());
 }
 
+onStart{
+	vars.curr_split = 0;
+}
+
 start{
 	if (settings["igt"]) {
-		vars.curr_split = 0;
 		vars.start_time = vars.time;
 		vars.seconds = DateTime.Now;
 		vars.game_seconds = new TimeSpan(0, 0, 0);
