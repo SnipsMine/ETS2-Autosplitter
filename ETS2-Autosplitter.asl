@@ -23,9 +23,15 @@ init
 	vars.seconds = null;
 	vars.pref_time = null;
 	vars.game_seconds = null;
-	
+
+	vars.nav_dist = 1;
+
 	vars.scale = 0;
-		
+
+	vars.curr_split = 0;
+	vars.tg_splits = new int[9]{3417000, 3248000, 3053000, 2772000, 2171000, 1940000, 1515000, 814000, -1};
+	vars.el_splits = new int[4]{458000, 270000, 135000, -1};
+
 }
 
 startup{
@@ -40,6 +46,14 @@ startup{
 	
 	settings.Add("realSeconds", false, "Real time seconds", "igt");
 	settings.SetToolTip("realSeconds", "When checked the real time seconds per minute will be used. Else the approximation of  the IGT seconds will be used.");
+
+	settings.Add("igt_autosplit", false, "Autosplit IGT Runs (choose one)", "igt");
+
+	settings.Add("tc", false, "Autosplit Tampere to Catania", "igt_autosplit");
+	settings.SetToolTip("tc", "Performs splits when; tbd");
+
+	settings.Add("el", false, "Autosplit Edinburgh to London", "igt_autosplit");
+    settings.SetToolTip("tc", "Performs splits when; tbd");
 
 }
 
@@ -80,18 +94,25 @@ update{
 					float scale;
 					accessor.Read(700, out scale);
 					vars.scale = scale;
+
+					float nav_dist;
+					accessor.Read(1060, out nav_dist);
+					vars.nav_dist = nav_dist;
+				    //print("Navigatie afstand: " + nav_dist);
+
 				}
 			}
 		}catch(FileNotFoundException e){
-			print("file " + file_name + " does not exist");
+			//print("file " + file_name + " does not exist");
 		}
 	}
 	DateTime end = DateTime.Now;
-	//print("Time Update: " + (end-start).ToString());
+	print("Time Update: " + (end-start).ToString());
 }
 
 start{
-	if (settings["igt"]) {  
+	if (settings["igt"]) {
+		vars.curr_split = 0;
 		vars.start_time = vars.time;
 		vars.seconds = DateTime.Now;
 		vars.game_seconds = new TimeSpan(0, 0, 0);
@@ -113,7 +134,6 @@ gameTime{
 				vars.seconds = DateTime.Now;
 			}
 			return gametime;
-			
 		}else{
 			if (settings["realSeconds"]) { 
 			    	if (vars.pauzed == false){
@@ -123,7 +143,7 @@ gameTime{
 				DateTime start2 = DateTime.Now;
 				vars.pref_time = vars.seconds;
 				vars.seconds = DateTime.Now;
-				print("Total time between runs: " + (vars.seconds - vars.pref_time).ToString());
+				//print("Total time between runs: " + (vars.seconds - vars.pref_time).ToString());
 				//TimeSpan game_seconds = TimeSpan.FromTicks(Convert.ToInt64(vars.scale * (vars.seconds - vars.pref_time).Ticks) + 1) ;
 				//vars.game_seconds += game_seconds;
 				DateTime end = DateTime.Now;
@@ -136,8 +156,23 @@ gameTime{
 }
 
 split{
-	if (vars.old_loading == true && vars.new_loading == false && (DateTime.Now - (DateTime) vars.loadTime).Seconds > 1){
-	
+	if (settings["tc"]){
+	    //print("Navigatie afstand: " + vars.nav_dist);
+        //print("split: " + vars.curr_split);
+
+        if (settings["tc"]){
+            int[] splits = vars.tg_splits;
+        }else if(settings["el"]){
+            int[] splits = vars.el_splits;
+        }else{
+            return false;
+        }
+
+	    if(vars.nav_dist <= splits[vars.curr_split]){
+	        vars.curr_split++;
+	        return true;
+	    }
+	}else if (vars.old_loading == true && vars.new_loading == false && (DateTime.Now - (DateTime) vars.loadTime).Seconds > 1){
 		return true;
 	}
 }
