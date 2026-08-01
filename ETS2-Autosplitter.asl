@@ -40,7 +40,7 @@ startup{
 	
 	settings.Add("loadRemoval", true, "Remove load times");
 	settings.SetToolTip("loadRemoval", "Removes the load times from the game");
-	
+
 	settings.Add("igt", false, "In game time");
 	settings.SetToolTip("igt", "If checked uncheck the load time remover and check Start to make this work\nWhen checked the timer will automatically start when the IGT changes, the time elapsed in game will be displayed on the game time timer.");
 	
@@ -53,7 +53,7 @@ startup{
 	settings.SetToolTip("tc", "Performs splits when; tbd");
 
 	settings.Add("el", false, "Autosplit Edinburgh to London", "igt_autosplit");
-    settings.SetToolTip("tc", "Performs splits when; tbd");
+    settings.SetToolTip("el", "Performs splits when; tbd");
 
 }
 
@@ -159,11 +159,11 @@ split{
 	if (settings["tc"]){
 	    //print("Navigatie afstand: " + vars.nav_dist);
         //print("split: " + vars.curr_split);
-
+        int[] splits = null;
         if (settings["tc"]){
-            int[] splits = vars.tg_splits;
+            splits = vars.tg_splits;
         }else if(settings["el"]){
-            int[] splits = vars.el_splits;
+            splits = vars.el_splits;
         }else{
             return false;
         }
