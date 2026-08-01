@@ -53,7 +53,7 @@ startup{
 	//settings.SetToolTip("tc", "Performs splits when; tbd");
 
 	settings.Add("el", false, "Autosplit Edinburgh to London", "igt_autosplit");
-   // settings.SetToolTip("el", "Performs splits when; tbd");
+    //settings.SetToolTip("el", "Performs splits when; tbd");
 
 }
 
@@ -107,7 +107,7 @@ update{
 		}
 	}
 	DateTime end = DateTime.Now;
-	print("Time Update: " + (end-start).ToString());
+	//print("Time Update: " + (end-start).ToString());
 }
 
 onStart{
@@ -171,7 +171,7 @@ split{
             return false;
         }
 
-	    if(vars.nav_dist <= splits[vars.curr_split]){
+	    if(vars.nav_dist <= splits[vars.curr_split] && vars.nav_dist > 10000){
 	        vars.curr_split++;
 	        return true;
 	    }
@@ -235,5 +235,4 @@ isLoading
 		//print("Time isLoading: " + (end-start).ToString());
 		return true;
 	}
-	
 }
